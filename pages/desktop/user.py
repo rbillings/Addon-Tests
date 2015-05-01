@@ -89,7 +89,7 @@ class EditProfile(Base):
     _profile_locator = (By.CSS_SELECTOR, "#profile-personal > legend")
     _details_locator = (By.CSS_SELECTOR, "#profile-detail > legend")
     _notification_locator = (By.CSS_SELECTOR, "#acct-notify > legend")
-    _hide_email_checkbox = (By.ID, 'id_emailhidden')
+    _email_checkbox = (By.ID, 'id_emailhidden')
     _update_account_locator = (By.CSS_SELECTOR, 'p.footer-submit > button.prominent')
     _profile_fields_locator = (By.CSS_SELECTOR, '#profile-personal > ol.formfields li')
     _update_message_locator = (By.CSS_SELECTOR, 'div.notification-box > h2')
@@ -119,8 +119,15 @@ class EditProfile(Base):
         self.selenium.find_element(*self._update_account_locator).click()
         WebDriverWait(self.selenium, self.timeout).until(lambda s: self.update_message == "Profile Updated")
 
-    def change_hide_email_state(self):
-        self.selenium.find_element(*self._hide_email_checkbox).click()
+    def hide_email_address(self):
+        email_checkbox = self.selenium.find_element(*self._email_checkbox)
+        if not email_checkbox.is_selected():
+                self.selenium.find_element(*self._email_checkbox).click()
+
+    def show_email_address(self):
+        email_checkbox = self.selenium.find_element(*self._email_checkbox)
+        if email_checkbox.is_selected():
+                self.selenium.find_element(*self._email_checkbox).click()
 
     @property
     def profile_fields(self):

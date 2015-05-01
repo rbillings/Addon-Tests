@@ -75,7 +75,7 @@ class TestAccounts:
 
     @pytest.mark.native
     @pytest.mark.login
-    def test_hide_email_checkbox_works(self, mozwebqa):
+    def test_hide_email_checkbox(self, mozwebqa):
         home_page = Home(mozwebqa)
         home_page.login()
 
@@ -86,9 +86,8 @@ class TestAccounts:
         initial_state = view_profile_page.is_email_field_present
 
         edit_profile_page = home_page.header.click_edit_profile()
-        edit_profile_page.change_hide_email_state()
+        edit_profile_page.hide_email_address()
         edit_profile_page.click_update_account()
-
         view_profile_page = home_page.header.click_view_profile()
         final_state = view_profile_page.is_email_field_present
 

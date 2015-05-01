@@ -248,6 +248,7 @@ class Base(Page):
                 click().perform()
 
             from pages.desktop.user import EditProfile
+            WebDriverWait(self.selenium, self.timeout).until(lambda s: self.selenium.title)
             return EditProfile(self.testsetup)
 
         def click_view_profile(self):
