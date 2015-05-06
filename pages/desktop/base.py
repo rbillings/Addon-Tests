@@ -248,8 +248,8 @@ class Base(Page):
                 click().perform()
 
             from pages.desktop.user import EditProfile
-            WebDriverWait(self.selenium, self.timeout).until(lambda s: self.selenium.title)
             return EditProfile(self.testsetup)
+            WebDriverWait(self.selenium, self.timeout).until(lambda s: self.selenium.find_element(*self._email_checkbox).is_displayed())
 
         def click_view_profile(self):
             item_locator = (By.CSS_SELECTOR, " li:nth-child(1) a")

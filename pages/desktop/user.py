@@ -6,6 +6,7 @@
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions 
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchAttributeException
@@ -121,11 +122,14 @@ class EditProfile(Base):
 
     def hide_email_address(self):
         email_checkbox = self.selenium.find_element(*self._email_checkbox)
+        WebDriverWait(self.selenium, self.timeout).until(expected_conditions.visibility_of(email_checkbox));
         if not email_checkbox.is_selected():
                 self.selenium.find_element(*self._email_checkbox).click()
+        return email_checkbox.is_selected()
 
     def show_email_address(self):
         email_checkbox = self.selenium.find_element(*self._email_checkbox)
+        WebDriverWait(self.selenium, self.timeout).until(expected_conditions.visibility_of(email_checkbox));
         if email_checkbox.is_selected():
                 self.selenium.find_element(*self._email_checkbox).click()
 
