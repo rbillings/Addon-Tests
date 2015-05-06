@@ -86,7 +86,7 @@ class TestAccounts:
         initial_state = view_profile_page.is_email_field_present
 
         edit_profile_page = home_page.header.click_edit_profile()
-        edit_profile_page.show_email_address()
+        edit_profile_page.hide_email_address()
         edit_profile_page.click_update_account()
         view_profile_page = home_page.header.click_view_profile()
         final_state = view_profile_page.is_email_field_present

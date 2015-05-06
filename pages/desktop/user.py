@@ -125,13 +125,14 @@ class EditProfile(Base):
         WebDriverWait(self.selenium, self.timeout).until(expected_conditions.visibility_of(email_checkbox));
         if not email_checkbox.is_selected():
                 self.selenium.find_element(*self._email_checkbox).click()
-        return email_checkbox.is_selected()
+        return email_checkbox.is_selected() == True
 
     def show_email_address(self):
         email_checkbox = self.selenium.find_element(*self._email_checkbox)
         WebDriverWait(self.selenium, self.timeout).until(expected_conditions.visibility_of(email_checkbox));
         if email_checkbox.is_selected():
                 self.selenium.find_element(*self._email_checkbox).click()
+        return email_checkbox.is_selected() == False
 
     @property
     def profile_fields(self):
