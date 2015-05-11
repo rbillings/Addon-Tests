@@ -113,6 +113,10 @@ class EditProfile(Base):
         return self.selenium.find_element(*self._details_locator).text
 
     @property
+    def checkbox_status(self):
+        return self.selenium.find_element(*self._email_checkbox).is_selected()
+
+    @property
     def notification_header_text(self):
         return self.selenium.find_element(*self._notification_locator).text
 
@@ -123,8 +127,13 @@ class EditProfile(Base):
     def hide_email_address(self):
         email_checkbox = self.selenium.find_element(*self._email_checkbox)
         WebDriverWait(self.selenium, self.timeout).until(expected_conditions.visibility_of(email_checkbox));
+
+        if email_checkbox.is_selected():
+            err_msg = 'Email is already hidden'
+            return err_msg
+
         if not email_checkbox.is_selected():
-                self.selenium.find_element(*self._email_checkbox).click()
+            self.selenium.find_element(*self._email_checkbox).click()
         return email_checkbox.is_selected() == True
 
     def show_email_address(self):
@@ -133,6 +142,10 @@ class EditProfile(Base):
         if email_checkbox.is_selected():
                 self.selenium.find_element(*self._email_checkbox).click()
         return email_checkbox.is_selected() == False
+
+        if not email_checkbox.is_selected():
+            err_msg = 'Email is already shown'
+            return err_msg
 
     @property
     def profile_fields(self):
