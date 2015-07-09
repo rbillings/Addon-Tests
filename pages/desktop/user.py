@@ -90,7 +90,7 @@ class EditProfile(Base):
     _profile_locator = (By.CSS_SELECTOR, "#profile-personal > legend")
     _details_locator = (By.CSS_SELECTOR, "#profile-detail > legend")
     _notification_locator = (By.CSS_SELECTOR, "#acct-notify > legend")
-    _email_checkbox = (By.ID, 'id_emailhidden')
+    _hide_email_checkbox_locator = (By.ID, 'id_emailhidden')
     _update_account_locator = (By.CSS_SELECTOR, 'p.footer-submit > button.prominent')
     _profile_fields_locator = (By.CSS_SELECTOR, '#profile-personal > ol.formfields li')
     _update_message_locator = (By.CSS_SELECTOR, 'div.notification-box > h2')
@@ -113,39 +113,36 @@ class EditProfile(Base):
         return self.selenium.find_element(*self._details_locator).text
 
     @property
-    def checkbox_status(self):
-        return self.selenium.find_element(*self._email_checkbox).is_selected()
-
-    @property
     def notification_header_text(self):
         return self.selenium.find_element(*self._notification_locator).text
 
     def click_update_account(self):
         self.selenium.find_element(*self._update_account_locator).click()
-        WebDriverWait(self.selenium, self.timeout).until(lambda s: self.update_message == "Profile Updated")
+        WebDriverWait(self.selenium, self.timeout).until
+        (lambda s: self.update_message == "Profile Updated")
 
     def hide_email_address(self):
-        email_checkbox = self.selenium.find_element(*self._email_checkbox)
-        WebDriverWait(self.selenium, self.timeout).until(expected_conditions.visibility_of(email_checkbox));
+        email_checkbox = self.selenium.find_element(*self._hide_email_checkbox_locator)
+        WebDriverWait(self.selenium, self.timeout).until
+        (expected_conditions.visibility_of(email_checkbox))
 
         if email_checkbox.is_selected():
-            err_msg = 'Email is already hidden'
-            return err_msg
-
-        if not email_checkbox.is_selected():
-            self.selenium.find_element(*self._email_checkbox).click()
-        return email_checkbox.is_selected() == True
+            raise Exception('Email is already hidden')
+        else:
+            self.selenium.find_element(*self._hide_email_checkbox_locator).click()
+        WebDriverWait(self.selenium, self.timeout).until
+        (lambda s: email_checkbox.is_selected())
 
     def show_email_address(self):
-        email_checkbox = self.selenium.find_element(*self._email_checkbox)
-        WebDriverWait(self.selenium, self.timeout).until(expected_conditions.visibility_of(email_checkbox));
-        if email_checkbox.is_selected():
-                self.selenium.find_element(*self._email_checkbox).click()
-        return email_checkbox.is_selected() == False
+        email_checkbox = self.selenium.find_element(*self._hide_email_checkbox_locator)
+        WebDriverWait(self.selenium, self.timeout).until
+        (expected_conditions.visibility_of(email_checkbox))
 
         if not email_checkbox.is_selected():
-            err_msg = 'Email is already shown'
-            return err_msg
+            raise Exception('Email is already shown')
+        else:
+            self.selenium.find_element(*self._hide_email_checkbox_locator).click()
+        return email_checkbox.is_selected() == False
 
     @property
     def profile_fields(self):

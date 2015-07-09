@@ -86,21 +86,12 @@ class TestAccounts:
         initial_state = view_profile_page.is_email_field_present
 
         edit_profile_page = home_page.header.click_edit_profile()
-        # make sure email checkbox isn't already selected
-        if edit_profile_page.checkbox_status == True:
-            edit_profile_page.show_email_address()
-            edit_profile_page.click_update_account()
-            home_page.header.click_edit_profile()
-            edit_profile_page.hide_email_address()
-
-        else:
-            edit_profile_page.hide_email_address()
-
+        edit_profile_page.hide_email_address()
         edit_profile_page.click_update_account()
         view_profile_page = home_page.header.click_view_profile()
         final_state = view_profile_page.is_email_field_present
 
-        Assert.equal(view_profile_page.is_email_field_present, False, 'The email address checkbox is not hidden')
+        Assert.equal(view_profile_page.is_email_field_present, False, 'The email address is not hidden')
 
     @pytest.mark.native
     @pytest.mark.login
