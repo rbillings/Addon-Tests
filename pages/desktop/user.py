@@ -44,7 +44,8 @@ class Login(Base):
         from browserid import BrowserID
         pop_up = BrowserID(self.selenium, self.timeout)
         pop_up.sign_in(credentials['email'], credentials['password'])
-        WebDriverWait(self.selenium, 20).until(lambda s: s.find_element(*self._logout_locator))
+        WebDriverWait(self.selenium, 20).until(
+            lambda s: s.find_element(*self._logout_locator))
 
 
 class ViewProfile(Base):
@@ -118,31 +119,27 @@ class EditProfile(Base):
 
     def click_update_account(self):
         self.selenium.find_element(*self._update_account_locator).click()
-        WebDriverWait(self.selenium, self.timeout).until
-        (lambda s: self.update_message == "Profile Updated")
+        WebDriverWait(self.selenium, self.timeout).until(
+            lambda s: self.update_message == "Profile Updated")
 
     def hide_email_address(self):
         email_checkbox = self.selenium.find_element(*self._hide_email_checkbox_locator)
-        WebDriverWait(self.selenium, self.timeout).until
-        (expected_conditions.visibility_of(email_checkbox))
+        WebDriverWait(self.selenium, self.timeout).until(
+            expected_conditions.visibility_of(email_checkbox))
 
         if email_checkbox.is_selected():
             raise Exception('Email is already hidden')
-        else:
             self.selenium.find_element(*self._hide_email_checkbox_locator).click()
-        WebDriverWait(self.selenium, self.timeout).until
-        (lambda s: email_checkbox.is_selected())
 
     def show_email_address(self):
         email_checkbox = self.selenium.find_element(*self._hide_email_checkbox_locator)
-        WebDriverWait(self.selenium, self.timeout).until
-        (expected_conditions.visibility_of(email_checkbox))
+        WebDriverWait(self.selenium, self.timeout).until(
+            expected_conditions.visibility_of(email_checkbox))
 
         if not email_checkbox.is_selected():
             raise Exception('Email is already shown')
         else:
             self.selenium.find_element(*self._hide_email_checkbox_locator).click()
-        return email_checkbox.is_selected() == False
 
     @property
     def profile_fields(self):
