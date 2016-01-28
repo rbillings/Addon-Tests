@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -12,6 +10,8 @@ from pages.desktop.search import SearchResultList
 
 
 class Collections(Base):
+
+    _url = '{base_url}/{locale}/firefox/collections/'
 
     _page_title = "Featured Collections :: Add-ons for Firefox"
     _default_selected_tab_locator = (By.CSS_SELECTOR, "#sorter li.selected")
@@ -28,7 +28,7 @@ class Collections(Base):
 
     def click_create_collection_button(self):
         self.selenium.find_element(*self._create_a_collection_locator).click()
-        return self.CreateNewCollection(self.testsetup)
+        return self.CreateNewCollection(self.base_url, self.selenium)
 
     class UserCollections(Page):
 
@@ -57,7 +57,7 @@ class Collections(Base):
 
         def click_create_collection(self):
             self.selenium.find_element(*self._create_collection_button_locator).click()
-            return Collection(self.testsetup)
+            return Collection(self.base_url, self.selenium)
 
 
 class Collection(Base):
@@ -81,7 +81,7 @@ class Collection(Base):
 
     def delete_confirmation(self):
         self.selenium.find_element(*self._delete_confirmation_locator).click()
-        return Collections.UserCollections(self.testsetup)
+        return Collections.UserCollections(self.base_url, self.selenium)
 
     @property
     def breadcrumb(self):

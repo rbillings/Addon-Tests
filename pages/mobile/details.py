@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -16,9 +14,9 @@ class Details(Base):
     _title_locator = (By.CSS_SELECTOR, 'div.infobox > h3')
     _contribute_button_locator = (By.XPATH, "//a[contains(.,'Contribute')]")
 
-    def __init__(self, testsetup, addon_name=None):
+    def __init__(self, base_url, selenium, addon_name=None):
         # formats name for url
-        Base.__init__(self, testsetup)
+        Base.__init__(self, base_url, selenium)
         if (addon_name is not None):
             self.addon_name = addon_name.replace(" ", "-")
             self.addon_name = re.sub(r'[^A-Za-z0-9\-]', '', self.addon_name).lower()

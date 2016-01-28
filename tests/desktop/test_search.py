@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -9,12 +7,16 @@ import pytest
 
 
 from pages.desktop.home import Home
+from pages.desktop.complete_themes import CompleteThemes
+from pages.desktop.collections import Collections
+from pages.desktop.extensions import ExtensionsHome
+from pages.desktop.themes import Themes
 
 
 class TestSearch:
 
     @pytest.mark.nondestructive
-    def test_that_search_all_add_ons_results_have_pagination_that_moves_through_results(self, mozwebqa):
+    def test_that_search_all_add_ons_results_have_pagination_that_moves_through_results(self, base_url, selenium):
         """
         Open a page with search results.
         1. On the first page, check that "<<" and "previous are not active, but "next" and ">>" are active.
@@ -23,7 +25,7 @@ class TestSearch:
         4. Assert the page number has incremented or decreased
         5. Click "previous", all buttons are highlighted.
         """
-        home_page = Home(mozwebqa)
+        home_page = Home(base_url, selenium)
         search_page = home_page.search_for('addon')
         expected_page = 1
 
@@ -69,14 +71,14 @@ class TestSearch:
         '',     # 11759
         '1',    # 17347
     ])
-    def test_that_various_search_terms_return_results(self, mozwebqa, term):
-        search_page = Home(mozwebqa).search_for(term)
+    def test_that_various_search_terms_return_results(self, base_url, selenium, term):
+        search_page = Home(base_url, selenium).search_for(term)
         assert not search_page.is_no_results_present
         assert search_page.result_count > 0
 
     @pytest.mark.nondestructive
-    def test_that_page_with_search_results_has_correct_title(self, mozwebqa):
-        home_page = Home(mozwebqa)
+    def test_that_page_with_search_results_has_correct_title(self, base_url, selenium):
+        home_page = Home(base_url, selenium)
         search_keyword = 'Search term'
         search_page = home_page.search_for(search_keyword)
         expected_title = '%s :: Search :: Add-ons for Firefox' % search_keyword
@@ -84,15 +86,15 @@ class TestSearch:
 
     @pytest.mark.smoke
     @pytest.mark.nondestructive
-    def test_that_searching_for_firebug_returns_firebug_as_first_result(self, mozwebqa):
-        home_page = Home(mozwebqa)
+    def test_that_searching_for_firebug_returns_firebug_as_first_result(self, base_url, selenium):
+        home_page = Home(base_url, selenium)
         search_page = home_page.search_for('firebug')
         results = [result.name for result in search_page.results]
         assert 'Firebug' == results[0]
 
     @pytest.mark.nondestructive
-    def test_that_searching_for_cool_returns_results_with_cool_in_their_name_description(self, mozwebqa):
-        home_page = Home(mozwebqa)
+    def test_that_searching_for_cool_returns_results_with_cool_in_their_name_description(self, base_url, selenium):
+        home_page = Home(base_url, selenium)
         search_term = 'cool'
         search_page = home_page.search_for(search_term)
         assert not search_page.is_no_results_present
@@ -112,8 +114,8 @@ class TestSearch:
 
     @pytest.mark.native
     @pytest.mark.nondestructive
-    def test_sorting_by_downloads(self, mozwebqa):
-        search_page = Home(mozwebqa).search_for('firebug')
+    def test_sorting_by_downloads(self, base_url, selenium):
+        search_page = Home(base_url, selenium).search_for('firebug')
         search_page.click_sort_by('Weekly Downloads')
         assert 'sort=downloads' in search_page.get_url_current_page()
         downloads = [i.downloads for i in search_page.results]
@@ -124,8 +126,8 @@ class TestSearch:
 
     @pytest.mark.native
     @pytest.mark.nondestructive
-    def test_sorting_by_newest(self, mozwebqa):
-        search_page = Home(mozwebqa).search_for('firebug')
+    def test_sorting_by_newest(self, base_url, selenium):
+        search_page = Home(base_url, selenium).search_for('firebug')
         search_page.click_sort_by('Newest')
         assert 'sort=created' in search_page.get_url_current_page()
         results = [i.created_date for i in search_page.results]
@@ -133,8 +135,8 @@ class TestSearch:
 
     @pytest.mark.native
     @pytest.mark.nondestructive
-    def test_sorting_by_most_recently_updated(self, mozwebqa):
-        search_page = Home(mozwebqa).search_for('firebug')
+    def test_sorting_by_most_recently_updated(self, base_url, selenium):
+        search_page = Home(base_url, selenium).search_for('firebug')
         search_page.click_sort_by('Recently Updated')
         assert 'sort=updated' in search_page.get_url_current_page()
         results = [i.updated_date for i in search_page.results]
@@ -145,16 +147,16 @@ class TestSearch:
 
     @pytest.mark.native
     @pytest.mark.nondestructive
-    def test_sorting_by_number_of_most_users(self, mozwebqa):
-        search_page = Home(mozwebqa).search_for('firebug')
+    def test_sorting_by_number_of_most_users(self, base_url, selenium):
+        search_page = Home(base_url, selenium).search_for('firebug')
         search_page.click_sort_by('Most Users')
         assert 'sort=users' in search_page.get_url_current_page()
         results = [i.users for i in search_page.results]
         assert sorted(results, reverse=True) == results
 
     @pytest.mark.nondestructive
-    def test_that_searching_for_a_tag_returns_results(self, mozwebqa):
-        home_page = Home(mozwebqa)
+    def test_that_searching_for_a_tag_returns_results(self, base_url, selenium):
+        home_page = Home(base_url, selenium)
         search_page = home_page.search_for('development')
         result_count = search_page.filter.results_count
         assert result_count > 0
@@ -162,8 +164,8 @@ class TestSearch:
         assert search_page.filter.results_count >= result_count
 
     @pytest.mark.nondestructive
-    def test_that_search_results_return_20_results_per_page(self, mozwebqa):
-        home_page = Home(mozwebqa)
+    def test_that_search_results_return_20_results_per_page(self, base_url, selenium):
+        home_page = Home(base_url, selenium)
         search_page = home_page.search_for('deutsch')
 
         first_expected = 1
@@ -189,42 +191,55 @@ class TestSearch:
         else:
             assert number == search_page.result_count
 
-    @pytest.mark.native
     @pytest.mark.nondestructive
     @pytest.mark.smoke
-    @pytest.mark.parametrize(('addon_type', 'term', 'breadcrumb_component'), [
-        ('Complete Themes', 'nasa', 'Complete Themes'),           # 17350
-        ('Extensions', 'fire', 'Extensions'),
-        ('Themes', 'fox', 'Themes'),        # 17349
-        ('Collections', 'web', 'Collections'),  # 17352
-        # these last two depend on the More menu
-        # ('Add-ons for Mobile', 'fire', 'Extensions')
-        # ('Dictionaries & Language Packs', 'a', 'Dictionaries'),
-    ])
-    def test_searching_for_addon_type_returns_results_of_correct_type(
-        self, mozwebqa, addon_type, term, breadcrumb_component
-    ):
-        amo_home_page = Home(mozwebqa)
+    def test_searching_for_extensions(self, base_url, selenium):
+        page = ExtensionsHome(base_url, selenium).open()
+        results_page = page.search_for('fire')
+        assert len(results_page.results) > 0
+        # click through to each result and verify navigation breadcrumbs
+        for i in range(len(results_page.results)):
+            addon = results_page.result(i).click_result()
+            assert 'Extensions' in addon.breadcrumb
+            selenium.back()
 
-        search_results = None
+    @pytest.mark.nondestructive
+    @pytest.mark.smoke
+    def test_searching_for_themes(self, base_url, selenium):
+        page = Themes(base_url, selenium).open()
+        results_page = page.search_for('fox')
+        assert len(results_page.results) > 0
+        # click through to each result and verify navigation breadcrumbs
+        for i in range(len(results_page.results)):
+            addon = results_page.result(i).click_result()
+            assert 'Themes' in addon.breadcrumb
+            selenium.back()
 
-        if (addon_type == 'Complete Themes'):
-            search_results = amo_home_page.search_for(term)
+    @pytest.mark.nondestructive
+    @pytest.mark.smoke
+    @pytest.mark.xfail(reason='https://github.com/mozilla/olympia/issues/1247')
+    def test_searching_for_complete_themes(self, base_url, selenium):
+        page = CompleteThemes(base_url, selenium).open()
+        results_page = page.search_for('nasa')
+        # show results for all firefox versions and platforms
+        results_page.filter.works_with.expand_filter_options()
+        results_page.filter.works_with.click_filter_all_versions_of_firefox()
+        results_page.filter.works_with.click_filter_all_systems()
+        assert len(results_page.results) > 0
+        # click through to each result and verify navigation breadcrumbs
+        for i in range(len(results_page.results)):
+            addon = results_page.result(i).click_result()
+            assert 'Complete Themes' in addon.breadcrumb
+            selenium.back()
 
-            search_results.filter.category.expand_filter_options()
-            search_results.filter.category.click_filter_complete_themes()
-
-            search_results.filter.works_with.expand_filter_options()
-            search_results.filter.works_with.click_filter_all_versions_of_firefox()
-            search_results.filter.works_with.click_filter_all_systems()
-        else:
-            amo_addon_type_page = amo_home_page.header.site_navigation_menu(addon_type).click()
-            search_results = amo_addon_type_page.search_for(term)
-
-        assert search_results.result_count > 0, 'Search did not return results. Search terms: %s' % search_results.selenium.current_url
-
-        # click through to each result and verify navigation breadcrumbs are correct
-        for i in range(search_results.result_count):
-            addon = search_results.result(i).click_result()
-            assert breadcrumb_component in addon.breadcrumb, 'URL: %s' % addon.selenium.current_url
-            addon.return_to_previous_page()
+    @pytest.mark.nondestructive
+    @pytest.mark.smoke
+    def test_searching_for_collections(self, base_url, selenium):
+        page = Collections(base_url, selenium).open()
+        results_page = page.search_for('web')
+        assert len(results_page.results) > 0
+        # click through to each result and verify navigation breadcrumbs
+        for i in range(len(results_page.results)):
+            addon = results_page.result(i).click_result()
+            assert 'Collections' in addon.breadcrumb
+            selenium.back()

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -33,8 +31,8 @@ class ViewProfile(Base):
     _about_locator = (By.CSS_SELECTOR, "div.island > section.primary > h2")
     _email_locator = (By.CSS_SELECTOR, 'a.email')
 
-    def __init__(self, testsetup):
-        Base.__init__(self, testsetup)
+    def __init__(self, base_url, selenium):
+        Base.__init__(self, base_url, selenium)
         WebDriverWait(self.selenium, self.timeout).until(
             lambda s: (s.find_element(*self._about_locator)).is_displayed())
 
@@ -74,8 +72,8 @@ class EditProfile(Base):
     _profile_fields_locator = (By.CSS_SELECTOR, '#profile-personal > ol.formfields li')
     _update_message_locator = (By.CSS_SELECTOR, 'div.notification-box > h2')
 
-    def __init__(self, testsetup):
-        Base.__init__(self, testsetup)
+    def __init__(self, base_url, selenium):
+        Base.__init__(self, base_url, selenium)
         WebDriverWait(self.selenium, self.timeout).until(
             lambda s: (s.find_element(*self._account_locator)).is_displayed())
 
@@ -104,7 +102,7 @@ class EditProfile(Base):
 
     @property
     def profile_fields(self):
-        return [self.ProfileSection(self.testsetup, web_element)
+        return [self.ProfileSection(self.base_url, self.selenium, web_element)
                 for web_element in self.selenium.find_elements(*self._profile_fields_locator)]
 
     @property
@@ -116,8 +114,8 @@ class EditProfile(Base):
         _input_field_locator = (By.CSS_SELECTOR, ' input')
         _field_name = (By.CSS_SELECTOR, ' label')
 
-        def __init__(self, testsetup, element):
-            Page.__init__(self, testsetup)
+        def __init__(self, base_url, selenium, element):
+            Page.__init__(self, base_url, selenium)
             self._root_element = element
 
         @property

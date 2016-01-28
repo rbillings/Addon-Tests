@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -16,11 +14,16 @@ from pages.page import Page
 
 class Base(Page):
 
+    _url = '{base_url}/{locale}'
+
     _amo_logo_locator = (By.CSS_SELECTOR, ".site-title")
     _amo_logo_link_locator = (By.CSS_SELECTOR, ".site-title a")
     _amo_logo_image_locator = (By.CSS_SELECTOR, ".site-title img")
 
     _footer_locator = (By.CSS_SELECTOR, "#footer")
+
+    def __init__(self, base_url, selenium, locale='en-US', **kwargs):
+        super(Base, self).__init__(base_url, selenium, locale=locale, **kwargs)
 
     def login(self, email, password):
         login_page = self.header.click_login()
@@ -38,7 +41,7 @@ class Base(Page):
     def click_amo_logo(self):
         self.selenium.find_element(*self._amo_logo_locator).click()
         from pages.desktop.home import Home
-        return Home(self.testsetup)
+        return Home(self.base_url, self.selenium)
 
     @property
     def amo_logo_title(self):
@@ -54,7 +57,7 @@ class Base(Page):
 
     @property
     def header(self):
-        return Base.HeaderRegion(self.testsetup)
+        return Base.HeaderRegion(self.base_url, self.selenium)
 
     def search_for(self, search_term):
         self.header.search_for(search_term)
@@ -62,19 +65,19 @@ class Base(Page):
         from pages.desktop.themes import Themes, ThemesSearchResultList
         from pages.desktop.complete_themes import CompleteThemes, CompleteThemesSearchResultList
         if isinstance(self, (Collections, CollectionSearchResultList)):
-            return CollectionSearchResultList(self.testsetup)
+            return CollectionSearchResultList(self.base_url, self.selenium)
         elif isinstance(self, (Themes, ThemesSearchResultList)):
-            return ThemesSearchResultList(self.testsetup)
+            return ThemesSearchResultList(self.base_url, self.selenium)
         elif isinstance(self, (CompleteThemes, CompleteThemesSearchResultList)):
-            return CompleteThemesSearchResultList(self.testsetup)
+            return CompleteThemesSearchResultList(self.base_url, self.selenium)
         else:
             from pages.desktop.search import SearchResultList
-            return SearchResultList(self.testsetup)
+            return SearchResultList(self.base_url, self.selenium)
 
     @property
     def breadcrumbs(self):
         from pages.desktop.regions.breadcrumbs import Breadcrumbs
-        return Breadcrumbs(self.testsetup).breadcrumbs
+        return Breadcrumbs(self.base_url, self.selenium).breadcrumbs
 
     def _extract_iso_dates(self, date_format, *locator):
         """
@@ -148,7 +151,7 @@ class Base(Page):
             # returns a list containing all the site navigation menus
             WebDriverWait(self.selenium, self.timeout).until(lambda s: len(s.find_elements(*self._site_navigation_menus_locator)) >= self._site_navigation_min_number_menus)
             from pages.desktop.regions.header_menu import HeaderMenu
-            return [HeaderMenu(self.testsetup, web_element) for web_element in self.selenium.find_elements(*self._site_navigation_menus_locator)]
+            return [HeaderMenu(self.base_url, self.selenium, web_element) for web_element in self.selenium.find_elements(*self._site_navigation_menus_locator)]
 
         def click_complete_themes(self):
             self.selenium.maximize_window()
@@ -158,7 +161,7 @@ class Base(Page):
                 move_to_element(complete_themes_menu).click().\
                 perform()
             from pages.desktop.complete_themes import CompleteThemes
-            return CompleteThemes(self.testsetup)
+            return CompleteThemes(self.base_url, self.selenium)
 
         def click_other_application(self, other_app):
             hover_locator = self.selenium.find_element(*self._other_applications_locator)
@@ -198,7 +201,7 @@ class Base(Page):
         def click_login(self):
             self.selenium.find_element(*self._login_locator).click()
             from pages.desktop.user import Login
-            return Login(self.testsetup)
+            return Login(self.base_url, self.selenium)
 
         @property
         def is_login_link_visible(self):
@@ -224,7 +227,7 @@ class Base(Page):
                 click().perform()
 
             from pages.desktop.user import EditProfile
-            return EditProfile(self.testsetup)
+            return EditProfile(self.base_url, self.selenium)
 
         def click_view_profile(self):
             item_locator = (By.CSS_SELECTOR, " li:nth-child(1) a")
@@ -235,10 +238,10 @@ class Base(Page):
                 click().perform()
 
             from pages.desktop.user import ViewProfile
-            view_profile_page = ViewProfile(self.testsetup)
+            view_profile_page = ViewProfile(self.base_url, self.selenium)
             # Force a wait for the view_profile_page
             view_profile_page.is_the_current_page
-            return ViewProfile(self.testsetup)
+            return ViewProfile(self.base_url, self.selenium)
 
         def click_my_collections(self):
             item_locator = (By.CSS_SELECTOR, " li:nth-child(3) a")
@@ -249,7 +252,7 @@ class Base(Page):
                 click().perform()
 
             from pages.desktop.user import MyCollections
-            return MyCollections(self.testsetup)
+            return MyCollections(self.base_url, self.selenium)
 
         def click_my_favorites(self):
             item_locator = (By.CSS_SELECTOR, " li:nth-child(4) a")
@@ -262,7 +265,7 @@ class Base(Page):
                 click().perform()
 
             from pages.desktop.user import MyFavorites
-            return MyFavorites(self.testsetup)
+            return MyFavorites(self.base_url, self.selenium)
 
         @property
         def is_my_favorites_menu_present(self):

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -15,6 +13,8 @@ from pages.desktop.search import SearchResultList
 
 class Themes(Base):
 
+    _url = '{base_url}/{locale}/firefox/themes/'
+
     _page_title = "Themes :: Add-ons for Firefox"
     _start_exploring_locator = (By.CSS_SELECTOR, "#featured-addons.personas-home a.more-info")
     _featured_addons_locator = (By.CSS_SELECTOR, "#featured-addons.personas-home")
@@ -28,16 +28,16 @@ class Themes(Base):
 
     @property
     def featured_themes(self):
-        return [self.ThemePreview(self.testsetup, root=el) for
+        return [self.ThemePreview(self.base_url, self.selenium, root=el) for
                 el in self.selenium.find_elements(*self._featured_themes_locator)]
 
     def open_theme_detail_page(self, theme_key):
         self.selenium.get(self.base_url + "/addon/%s" % theme_key)
-        return ThemesDetail(self.testsetup)
+        return ThemesDetail(self.base_url, self.selenium)
 
     def click_start_exploring(self):
         self.selenium.find_element(*self._start_exploring_locator).click()
-        return ThemesBrowse(self.testsetup)
+        return ThemesBrowse(self.base_url, self.selenium)
 
     @property
     def is_featured_addons_present(self):
@@ -80,7 +80,7 @@ class Themes(Base):
 
         def click(self):
             self.root.find_element(*self._link_locator).click()
-            return ThemesDetail(self.testsetup)
+            return ThemesDetail(self.base_url, self.selenium)
 
 
 class ThemesDetail(Base):

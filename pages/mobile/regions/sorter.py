@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -19,15 +17,15 @@ class Sorter(Page):
 
     @property
     def options(self):
-        return [self.SortOption(self.testsetup, element)
+        return [self.SortOption(self.base_url, self.selenium, element)
                 for element in self.selenium.find_element(*self._menu_locator).find_elements(*self._menu_option_locator)]
 
     class SortOption(Page):
 
         _name_locator = (By.CSS_SELECTOR, 'a')
 
-        def __init__(self, testsetup, element):
-            Page.__init__(self, testsetup)
+        def __init__(self, base_url, selenium, element):
+            Page.__init__(self, base_url, selenium)
             self._root_element = element
 
         @property

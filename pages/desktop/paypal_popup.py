@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -20,14 +18,15 @@ class PayPalPopup(Page):
     _pay_button_locator = (By.NAME, '_eventId_submit')
     _order_details_locator = (By.ID, 'order-details')
 
-    def __init__(self, testsetup):
-        Page.__init__(self, testsetup)
+    def __init__(self, base_url, selenium):
+        Page.__init__(self, base_url, selenium)
         self.selenium.switch_to_window(self._pop_up_id)
 
     def login_paypal(self, email, password):
         self.selenium.find_element(*self._email_locator).send_keys(email)
         self.selenium.find_element(*self._password_locator).send_keys(password)
         self.selenium.find_element(*self._login_locator).click()
+        self.wait.until(lambda s: self.is_user_logged_into_paypal)
 
     def close_paypal_popup(self):
         self.selenium.find_element(*self._pay_button_locator).click()

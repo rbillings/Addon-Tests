@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -16,8 +14,8 @@ class TestAccounts:
     @pytest.mark.nondestructive
     @pytest.mark.login
     @pytest.mark.native
-    def test_user_can_login_and_logout(self, mozwebqa, existing_user):
-        home_page = Home(mozwebqa)
+    def test_user_can_login_and_logout(self, base_url, selenium, existing_user):
+        home_page = Home(base_url, selenium)
         home_page.login(existing_user['email'], existing_user['password'])
         assert home_page.is_the_current_page
         assert home_page.header.is_user_logged_in
@@ -28,8 +26,8 @@ class TestAccounts:
     @pytest.mark.native
     @pytest.mark.nondestructive
     @pytest.mark.login
-    def test_user_can_access_the_edit_profile_page(self, mozwebqa, existing_user):
-        home_page = Home(mozwebqa)
+    def test_user_can_access_the_edit_profile_page(self, base_url, selenium, existing_user):
+        home_page = Home(base_url, selenium)
         home_page.login(existing_user['email'], existing_user['password'])
         assert home_page.is_the_current_page
         assert home_page.header.is_user_logged_in
@@ -45,8 +43,8 @@ class TestAccounts:
     @pytest.mark.native
     @pytest.mark.nondestructive
     @pytest.mark.login
-    def test_user_can_access_the_view_profile_page(self, mozwebqa, existing_user):
-        home_page = Home(mozwebqa)
+    def test_user_can_access_the_view_profile_page(self, base_url, selenium, existing_user):
+        home_page = Home(base_url, selenium)
         home_page.login(existing_user['email'], existing_user['password'])
         assert home_page.is_the_current_page
         assert home_page.header.is_user_logged_in
@@ -56,8 +54,8 @@ class TestAccounts:
 
     @pytest.mark.native
     @pytest.mark.login
-    def test_user_can_update_profile_information_in_account_settings_page(self, mozwebqa, editable_user):
-        home_page = Home(mozwebqa)
+    def test_user_can_update_profile_information_in_account_settings_page(self, base_url, selenium, editable_user):
+        home_page = Home(base_url, selenium)
         home_page.login(editable_user['email'], editable_user['password'])
         assert home_page.is_the_current_page
         assert home_page.header.is_user_logged_in

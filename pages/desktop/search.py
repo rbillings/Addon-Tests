@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -22,8 +20,8 @@ class SearchResultList(Base):
     _search_results_title_locator = (By.CSS_SELECTOR, "section.primary > h1")
     _results_locator = (By.CSS_SELECTOR, "div.items div.item.addon")
 
-    def __init__(self, testsetup):
-        Base.__init__(self, testsetup)
+    def __init__(self, base_url, selenium):
+        Base.__init__(self, base_url, selenium)
         WebDriverWait(self.selenium, self.timeout).until(
             lambda s: self.is_no_results_present or
             len(s.find_elements(*self._results_locator)) > 0)
@@ -43,7 +41,7 @@ class SearchResultList(Base):
     @property
     def filter(self):
         from pages.desktop.regions.search_filter import FilterBase
-        return FilterBase(self.testsetup)
+        return FilterBase(self.base_url, self.selenium)
 
     @property
     def result_count(self):
@@ -51,7 +49,7 @@ class SearchResultList(Base):
 
     def click_sort_by(self, type):
         from pages.desktop.regions.sorter import Sorter
-        Sorter(self.testsetup).sort_by(type)
+        Sorter(self.base_url, self.selenium).sort_by(type)
 
     def result(self, lookup):
         elements = self.selenium.find_elements(*self._results_locator)
@@ -59,33 +57,33 @@ class SearchResultList(Base):
         from pages.desktop.themes import ThemesSearchResultList, Themes
         from pages.desktop.complete_themes import CompleteThemes, CompleteThemesSearchResultList
         if isinstance(self, (Collections, CollectionSearchResultList)):
-            return self.CollectionsSearchResultItem(self.testsetup, elements[lookup])
+            return self.CollectionsSearchResultItem(self.base_url, self.selenium, elements[lookup])
         elif isinstance(self, (Themes, ThemesSearchResultList)):
-            return self.ThemesSearchResultItem(self.testsetup, elements[lookup])
+            return self.ThemesSearchResultItem(self.base_url, self.selenium, elements[lookup])
         elif isinstance(self, (CompleteThemes, CompleteThemesSearchResultList)):
-            return self.CompleteThemesSearchResultItem(self.testsetup, elements[lookup])
+            return self.CompleteThemesSearchResultItem(self.base_url, self.selenium, elements[lookup])
         else:
-            return self.SearchResultItem(self.testsetup, elements[lookup])
+            return self.SearchResultItem(self.base_url, self.selenium, elements[lookup])
 
     @property
     def results(self):
         elements = self.selenium.find_elements(*self._results_locator)
-        return [self.SearchResultItem(self.testsetup, web_element)
+        return [self.SearchResultItem(self.base_url, self.selenium, web_element)
                 for web_element in elements
                 ]
 
     @property
     def paginator(self):
         from pages.desktop.regions.paginator import Paginator
-        return Paginator(self.testsetup)
+        return Paginator(self.base_url, self.selenium)
 
     class SearchResultItem(Page):
         _name_locator = (By.CSS_SELECTOR, 'div.info > h3 > a')
         _created_date = (By.CSS_SELECTOR, 'div.info > div.vitals > div.updated')
         _sort_criteria = (By.CSS_SELECTOR, 'div.info > div.vitals > div.adu')
 
-        def __init__(self, testsetup, element):
-            Page.__init__(self, testsetup)
+        def __init__(self, base_url, selenium, element):
+            Page.__init__(self, base_url, selenium)
             self._root_element = element
 
         @property
@@ -133,10 +131,10 @@ class SearchResultList(Base):
             from pages.desktop.complete_themes import CompleteTheme, CompleteThemesSearchResultList
             from pages.desktop.details import Details
             if isinstance(self, CollectionSearchResultList.CollectionsSearchResultItem):
-                return Collection(self.testsetup)
+                return Collection(self.base_url, self.selenium)
             elif isinstance(self, ThemesSearchResultList.ThemesSearchResultItem):
-                return ThemesDetail(self.testsetup)
+                return ThemesDetail(self.base_url, self.selenium)
             elif isinstance(self, CompleteThemesSearchResultList.CompleteThemesSearchResultItem):
-                return CompleteTheme(self.testsetup)
+                return CompleteTheme(self.base_url, self.selenium)
             else:
-                return Details(self.testsetup)
+                return Details(self.base_url, self.selenium)

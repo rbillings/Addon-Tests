@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -16,8 +14,8 @@ class TestThemes:
 
     @pytest.mark.native
     @pytest.mark.nondestructive
-    def test_start_exploring_link_in_the_promo_box(self, mozwebqa):
-        home_page = Home(mozwebqa)
+    def test_start_exploring_link_in_the_promo_box(self, base_url, selenium):
+        home_page = Home(base_url, selenium)
         themes_page = home_page.header.site_navigation_menu("Themes").click()
         assert themes_page.is_the_current_page
         assert themes_page.is_featured_addons_present
@@ -28,16 +26,16 @@ class TestThemes:
 
     @pytest.mark.native
     @pytest.mark.nondestructive
-    def test_page_title_for_themes_landing_page(self, mozwebqa):
-        home_page = Home(mozwebqa)
+    def test_page_title_for_themes_landing_page(self, base_url, selenium):
+        home_page = Home(base_url, selenium)
         themes_page = home_page.header.site_navigation_menu("Themes").click()
         assert themes_page.is_the_current_page
 
     @pytest.mark.native
     @pytest.mark.smoke
     @pytest.mark.nondestructive
-    def test_the_featured_themes_section(self, mozwebqa):
-        home_page = Home(mozwebqa)
+    def test_the_featured_themes_section(self, base_url, selenium):
+        home_page = Home(base_url, selenium)
         themes_page = home_page.header.site_navigation_menu("Themes").click()
         assert themes_page.is_the_current_page
         assert 0 < len(themes_page.featured_themes) <= 6
@@ -45,8 +43,8 @@ class TestThemes:
     @pytest.mark.native
     @pytest.mark.smoke
     @pytest.mark.nondestructive
-    def test_the_recently_added_section(self, mozwebqa):
-        home_page = Home(mozwebqa)
+    def test_the_recently_added_section(self, base_url, selenium):
+        home_page = Home(base_url, selenium)
         themes_page = home_page.header.site_navigation_menu("Themes").click()
         assert themes_page.is_the_current_page
         assert 6 == themes_page.recently_added_count
@@ -56,8 +54,8 @@ class TestThemes:
     @pytest.mark.native
     @pytest.mark.smoke
     @pytest.mark.nondestructive
-    def test_the_most_popular_section(self, mozwebqa):
-        home_page = Home(mozwebqa)
+    def test_the_most_popular_section(self, base_url, selenium):
+        home_page = Home(base_url, selenium)
         themes_page = home_page.header.site_navigation_menu("Themes").click()
         assert themes_page.is_the_current_page
         assert 6 == themes_page.most_popular_count
@@ -66,8 +64,8 @@ class TestThemes:
 
     @pytest.mark.native
     @pytest.mark.nondestructive
-    def test_the_top_rated_section(self, mozwebqa):
-        home_page = Home(mozwebqa)
+    def test_the_top_rated_section(self, base_url, selenium):
+        home_page = Home(base_url, selenium)
         themes_page = home_page.header.site_navigation_menu("Themes").click()
         assert themes_page.is_the_current_page
         assert 6 == themes_page.top_rated_count
@@ -76,10 +74,10 @@ class TestThemes:
 
     @pytest.mark.native
     @pytest.mark.nondestructive
-    def test_breadcrumb_menu_in_theme_details_page(self, mozwebqa):
+    def test_breadcrumb_menu_in_theme_details_page(self, base_url, selenium):
 
         # Step 1, 2: Access AMO Home, Click on theme category link.
-        home_page = Home(mozwebqa)
+        home_page = Home(base_url, selenium)
         themes_page = home_page.header.site_navigation_menu("Themes").click()
         assert themes_page.is_the_current_page
 
@@ -111,8 +109,8 @@ class TestThemes:
 
     @pytest.mark.native
     @pytest.mark.nondestructive
-    def test_themes_breadcrumb_format(self, mozwebqa):
-        home_page = Home(mozwebqa)
+    def test_themes_breadcrumb_format(self, base_url, selenium):
+        home_page = Home(base_url, selenium)
         themes_page = home_page.header.site_navigation_menu("Themes").click()
         assert 'Add-ons for Firefox' == themes_page.breadcrumbs[0].text
         assert 'Themes' == themes_page.breadcrumbs[1].text
