@@ -69,6 +69,11 @@ from the the project root, issue the following command:
 
     pip install -Ur requirements.txt
 
+###Create test users
+Some of the tests require logging in as an user, and others require logging in as an editor user or paypal user.
+To run these tests you will need to create accounts on https://addons.allizom.org/. If you want to run the tests
+that require editor access, then you will need to ask someone on irc to upgrade one of your test accounts.
+
 ### Create a variables.json file
 Some of the tests in this repo need to log into the add-ons website and/or PayPal.
 We store the credentials (i.e., username and password) to access those sites in a file 
@@ -76,9 +81,31 @@ called `variables.json`, which we then pass to the tests via the command line.
 If you want to be able to run any of those tests, you will need your own copy of 
 the `variables.json` file, which you will update to contain your own credentials.
 To do that, make a copy of the `variables.json` file which exists in the project root
- and update that with your own credentials. 
+ and update that with your own credentials (see above). 
  You will then pass the name of that file on the command line. 
  For the purposes of the examples below, assume you named your copy of the file `my_variables.json`.
+ 
+ The following is an example JSON file with the values missing. You can use this as a template.
+ 
+ {
+  "users": {
+    "default": {
+      "email": "",
+      "password": "",
+      "name": ""
+    },
+    "editable": {
+      "email": "",
+      "password": "",
+      "name": "",
+      "gmail_password": ""
+    }
+  },
+  "paypal": {
+    "email": "",
+    "password": ""
+  }
+}
 
 ### Run the tests
 
