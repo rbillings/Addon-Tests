@@ -45,7 +45,7 @@ How to run the tests locally
 We maintain a [detailed guide][runningtests] to running our automated tests which can be found on the MDN website.
 If you want to get started quickly, you can try following the steps in our quick-start instructions below:
 
-###Clone the repository
+### Clone the repository
 If you have cloned this project already then you can skip this, otherwise you'll need to clone this repo using Git.
 If you do not know how to clone a GitHub repository, check out this 
 [help page] (https://help.github.com/articles/cloning-a-repository/) from GitHub.
@@ -69,10 +69,10 @@ from the the project root, issue the following command:
 
     pip install -Ur requirements.txt
 
-###Create test users
-Some of the tests require logging in as an user, and others require logging in as an editor user or paypal user.
-To run these tests you will need to create accounts on https://addons.allizom.org/. If you want to run the tests
-that require editor access, then you will need to ask someone on IRC to upgrade one of your test accounts.
+### Create test users
+Some of the tests require logging in as an user, and others require logging in as an editable user or paypal user.
+To run these tests you will need to create accounts on https://addons.allizom.org/. If you have questions about
+editable or paypal access, then you will need to ask someone on IRC to upgrade one of your test accounts.
 
 ### Create a variables.json file
 Some of the tests in this repo need to log into the add-ons website and/or PayPal.
@@ -87,6 +87,7 @@ To do that, make a copy of the `variables.json` file which exists in the project
  
  The following is an example JSON file with the values missing. You can use this as a template.
  
+ ```json
  {
   "users": {
     "default": {
@@ -106,6 +107,7 @@ To do that, make a copy of the `variables.json` file which exists in the project
     "password": ""
   }
 }
+```
 
 ### Run the tests
 
